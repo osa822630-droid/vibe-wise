@@ -4,12 +4,31 @@ V1 uses Claude Code skills, Markdown instructions, one read-only Python hook,
 and a small Python helper for confirmed learning resets.
 There are no packages to install. Python 3.8+ is sufficient for the hook and tests.
 
+## Layout
+
+```text
+.claude-plugin/marketplace.json    catalog that Claude Code and claude.ai read
+plugins/vibe-wise/                 the plugin itself
+  .claude-plugin/plugin.json       plugin manifest
+  .codex-plugin/plugin.json        Codex manifest
+  skills/learn/, skills/reset/     SKILL.md plus guides and scripts
+  hooks/                           SessionStart restoration (Claude Code, Cowork)
+.agents/plugins/marketplace.json   Codex catalog, pointing at the same plugin folder
+tests/                             hook, reset, and catalog checks
+```
+
+The marketplace root and the plugin folder are deliberately separate. claude.ai
+clones the repository, reads the catalog, and validates each plugin entry on its
+own; a plugin that is also the marketplace root exposes two manifests in one folder
+and depends on behavior that differs between the CLI and claude.ai.
+
 ## Local checks
 
 ```sh
-claude plugin validate .claude-plugin/plugin.json
 claude plugin validate .claude-plugin/marketplace.json
-claude plugin validate skills
+claude plugin validate plugins/vibe-wise
+claude plugin validate plugins/vibe-wise --strict --profile directory
+claude plugin validate plugins/vibe-wise/skills
 python3 -B -m unittest discover -s tests -v
 git diff --check
 ```
@@ -25,11 +44,33 @@ repository boundaries, nearest-state selection, and symlink rejection.
 Reset tests cover read-only preview, confirmed backup/reset, stale confirmation,
 legacy and partial notes, nested projects, repeated backups, rejected symlinks,
 backup/write failures, and restoring incomplete onboarding after reset.
+Catalog tests keep the manifest in the shape claude.ai accepts when a marketplace is
+added from a repository: relative sources that start with `./`, a `plugin.json` whose
+name matches its entry, no top-level `bin/`, hook commands that resolve, and
+`SKILL.md` frontmatter limited to the fields the Agent Skills specification defines.
+They also check that the Learn and Reset guides keep their Claude on the web
+sections.
+
+## Claude on the web
+
+claude.ai loads a plugin's skills and commands, and ignores its hooks and agents.
+The Learn skill therefore documents a file-free mode: plain-text questions instead
+of AskUserQuestion, and a `vibe-wise-state.md` block that carries the profile,
+progress, map, and pending decision between chats. `skills/learn/web.md` holds the
+full adaptation. Keep the summary in `SKILL.md` short and self-contained, because a
+chat without code execution may not be able to open the guide.
+
+Two claude.ai behaviors to remember when editing the manifests:
+
+- A marketplace's name comes from the repository name and is enforced before the
+  catalog is read, so a second fork with the same repository name is rejected.
+- Under the default strict mode, each entry needs a `.claude-plugin/plugin.json`, and
+  `"source": "."` is rejected even though `claude plugin validate` accepts it.
 
 ## Conversation smoke tests
 
 Use an authenticated Claude Code session and temporary copies of projects.
-Launch with `claude --plugin-dir /absolute/path/to/vibe-wise`.
+Launch with `claude --plugin-dir /absolute/path/to/vibe-wise/plugins/vibe-wise`.
 
 For a manual walkthrough based on the playground notes app, see the
 [Notion-style demo](demos/notion-dupe.md).
@@ -193,8 +234,12 @@ Verified against current first-party documentation on 2026-09-28:
   pending sections plus relevant topics before continuing. Hook output does not
   grow with learning history; Claude's subsequent file reads still consume context.
 - [Marketplace creation](https://code.claude.com/docs/en/plugin-marketplaces):
-  the small catalog points to this repository's plugin root. The GitHub install
-  instructions work after these files are published to the remote repository.
+  the catalog at the repository root points to `./plugins/vibe-wise`, so the same
+  repository can be added in Claude Code and in claude.ai.
+- [Plugins on claude.ai](https://claude.com/docs/plugins/overview) and
+  [platform support](https://claude.com/docs/plugins/platform-support): chat loads
+  skills and commands and ignores hooks and agents; a marketplace is added from a
+  repository URL, and its name comes from the repository.
 - [Anthropic's learning-output-style plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/learning-output-style):
   inspected its SessionStart configuration and context injection. VibeWise
   supplies its own reasoning-first instructions and leaves implementation to AI.
@@ -305,3 +350,15 @@ Learn/behavior guides and saved notes, found a pending implementation decision
 over 40,000 characters into progress, and resumed its confirmation without writing
 application code. The source fixture stayed unchanged. Compaction events remain
 covered at the hook level; an actual interactive `/compact` check is still pending.
+
+For 0.1.45, the repository was split into a marketplace root and a
+`plugins/vibe-wise/` plugin folder so the same repository can be added in claude.ai
+with Add marketplace. The skills dropped Claude Code-only frontmatter
+(`disable-model-invocation`) because the Agent Skills specification, and therefore
+some claude.ai validation, rejects fields it doesn't define; Codex still disables
+implicit invocation through `agents/openai.yaml`. Learn and Reset gained a
+Claude-on-the-web mode with plain-text questions and a `vibe-wise-state.md` block
+instead of local notes. Catalog tests, both `claude plugin validate` profiles, the
+Agent Skills reference validator, and the 48 hook, reset, and catalog tests pass.
+Adding the marketplace on claude.ai itself still needs a manual check on an account
+with plugins available.

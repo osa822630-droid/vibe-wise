@@ -1,0 +1,11 @@
+{
+  "name": "vibe-wise",
+  "displayName": "VibeWise",
+  "version": "0.1.45",
+  "description": "You build. AI writes. Learn how to build software while Claude writes the code.",
+  "author": { "name": "Noah Kim" },
+  "homepage": "https://github.com/osa822630-droid/vibe-wise",
+  "repository": "https://github.com/osa822630-droid/vibe-wise",
+  "license": "MIT",
+  "keywords": ["learning", "architecture", "engineering", "chat", "claude-ai"]
+}

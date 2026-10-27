@@ -1,18 +1,21 @@
-<img src=".claude-plugin/icon.svg" alt="VibeWise brain with code brackets" width="96" height="96">
+<img src="plugins/vibe-wise/.claude-plugin/icon.svg" alt="VibeWise brain with code brackets" width="96" height="96">
 
 # VibeWise
 
 **You build. AI writes.**
 
-A plugin for **Claude Code** and **Codex** that puts learning first and keeps you in control while AI writes the code you designed. The AI **asks for your approach first**, helps you examine tradeoffs, and explains unfamiliar concepts. You shape the design and decide when it's ready to implement. The AI writes the code, then explains what it changed and why.
+A plugin for **Claude Code**, **Claude on the web** (claude.ai chat and Cowork), and **Codex** that puts learning first and keeps you in control while AI writes the code you designed. The AI **asks for your approach first**, helps you examine tradeoffs, and explains unfamiliar concepts. You shape the design and decide when it's ready to implement. The AI writes the code, then explains what it changed and why.
 
 For anyone who wants to learn as they build—whether you're an aspiring engineer, a junior developer, or an experienced engineer exploring an unfamiliar stack. Practice planning how the pieces fit together, anticipating failures, and checking the result while keeping ownership of the decisions.
 
 ## Table of Contents
 
 - [Get started](#get-started)
+  - [Claude on the web](#claude-on-the-web)
   - [Claude Code](#claude-code)
   - [Codex](#codex)
+- [This fork](#this-fork)
+- [Troubleshooting the web marketplace](#troubleshooting-the-web-marketplace)
 - [What it feels like](#what-it-feels-like)
 - [Make it yours](#make-it-yours)
 - [Updating](#updating)
@@ -20,40 +23,54 @@ For anyone who wants to learn as they build—whether you're an aspiring enginee
 
 ## Get started
 
-You need an up-to-date [Claude Code](https://code.claude.com/docs/en/setup) or
-[Codex](https://developers.openai.com/codex), and
-[Python 3](https://www.python.org/downloads/). In Claude Code, VibeWise uses Python
-to restore learning context and reset learning notes. In Codex, only reset needs it.
-No extra Python packages are needed.
+The plugin is the same on every surface. Pick where you use it; the install steps
+differ because only Claude Code and Codex can run terminal commands.
+
+You need an up-to-date [Claude](https://claude.ai), [Claude
+Code](https://code.claude.com/docs/en/setup), or
+[Codex](https://developers.openai.com/codex). Claude Code and Codex also need
+[Python 3](https://www.python.org/downloads/); Claude on the web needs nothing
+installed. In Claude Code, VibeWise uses Python to restore learning context and
+reset learning notes. In Codex, only reset needs it. No extra Python packages are
+needed.
+
+### Claude on the web
+
+Works in claude.ai chat, the Claude desktop app, and Cowork. No terminal, no
+download, and no Python.
+
+1. Open [Customize → Plugins](https://claude.ai/customize/plugins).
+2. Select **Add**, then **Add marketplace**, then **Add from a repository**.
+3. Enter `osa822630-droid/vibe-wise` (the full
+   `https://github.com/osa822630-droid/vibe-wise` URL works too) and select **Sync**.
+4. Open the **Personal** tab, select **VibeWise**, and add it to your account.
+5. Start a chat and ask for **VibeWise** or **learn mode**; typing `/` also lists
+   the plugin's skills.
+
+Setup asks one question at a time. Answer in plain text, because the choice picker
+from Claude Code isn't available in chat. Then ask for what you want to build.
+
+On the web the plugin has no file access, so your notes travel inside the
+conversation instead of a `.vibe-wise/` folder. After setup, and again after each
+confirmed design, VibeWise prints a compact `vibe-wise-state.md` block. Keep it in
+your Claude Project's knowledge to resume in another chat; a new chat without it
+starts fresh.
+
+What loads on the web: the Learn and Reset skills and the learning behavior. What
+doesn't: session hooks, automatic restoration, and running your repository's code or
+tests. Claude writes the agreed code in the chat or an artifact, as you approved it,
+and says which checks it couldn't run.
+
+If the marketplace won't add, see
+[Troubleshooting the web marketplace](#troubleshooting-the-web-marketplace).
 
 ### Claude Code
 
-Install from the built-in **Anthropic Directory**. In Claude Code, run:
+This repository is its own marketplace. Run these commands **one at a time** in
+Claude Code. First, add the marketplace:
 
 ```text
-/plugin install vibe-wise@anthropic-plugin-directory
-```
-
-Choose an installation scope and confirm. No marketplace setup is needed.
-
-Restart Claude Code in the project you want to work on, then run:
-
-```text
-/vibe-wise:learn
-```
-
-Setup asks one question at a time. Use the arrow keys and Enter for choices; pick **Use defaults** to skip preference setup. Then ask Claude to build something. Starting fresh or joining an unfamiliar repository both work. For an existing repository, Claude first inspects the code and sketches a small system map.
-
-<details>
-<summary>Alternative: install through GitHub</summary>
-
-If Anthropic Directory isn't available in your Claude Code version, use the GitHub
-marketplace. Choose one installation method; you don't need both.
-
-Run these commands **one at a time** in Claude Code. First, add the marketplace:
-
-```text
-/plugin marketplace add nykooi1/vibe-wise
+/plugin marketplace add osa822630-droid/vibe-wise
 ```
 
 After it finishes, install the plugin:
@@ -64,7 +81,29 @@ After it finishes, install the plugin:
 
 Enable automatic updates through `/plugin` → **Marketplaces** → **vibe-wise** →
 **Enable auto-update**. This is off by default for third-party marketplaces.
-Restart Claude Code, then run `/vibe-wise:learn` in your project.
+Restart Claude Code in the project you want to work on, then run:
+
+```text
+/vibe-wise:learn
+```
+
+Setup asks one question at a time. Use the arrow keys and Enter for choices; pick
+**Use defaults** to skip preference setup. Then ask Claude to build something.
+Starting fresh or joining an unfamiliar repository both work. For an existing
+repository, Claude first inspects the code and sketches a small system map.
+
+<details>
+<summary>Alternative: install the upstream plugin from Anthropic's Directory</summary>
+
+The original project is also published in the built-in **Anthropic Directory**. If
+you don't need this fork's changes, run:
+
+```text
+/plugin install vibe-wise@anthropic-plugin-directory
+```
+
+Choose an installation scope and confirm. No marketplace setup is needed. Choose
+one installation method; you don't need both.
 
 </details>
 
@@ -73,7 +112,7 @@ Restart Claude Code, then run `/vibe-wise:learn` in your project.
 In a terminal, run these commands **one at a time**. First, add the marketplace:
 
 ```sh
-codex plugin marketplace add nykooi1/vibe-wise
+codex plugin marketplace add osa822630-droid/vibe-wise
 ```
 
 After it finishes, install the plugin:
@@ -89,6 +128,44 @@ mode. It resumes from your saved notes without repeating setup. To reset, run
 
 In Codex, the commands in this guide use `$` instead of `/`: `/vibe-wise:learn`
 becomes `$vibe-wise:learn`.
+
+## This fork
+
+This is [nykooi1/vibe-wise](https://github.com/nykooi1/vibe-wise) laid out so the
+same repository can be added as a marketplace in Claude Code, Codex, and claude.ai.
+The catalog sits at the repository root and the plugin lives in `plugins/vibe-wise/`.
+Claude Code and Codex keep their `.vibe-wise/` notes and session hook; Claude on the
+web gets a file-free mode that keeps the same notes in the conversation. The only
+behavior change for existing users is that the Learn and Reset skills are now
+model-invocable, because claude.ai rejects Claude Code-only `SKILL.md` frontmatter.
+
+## Troubleshooting the web marketplace
+
+The claude.ai dialog says only "Failed to add marketplace" or "Marketplace sync
+failed. Check the repository URL and try again." even when the real cause is
+something else. Check these in order.
+
+- **A marketplace named `vibe-wise` already exists.** claude.ai names a marketplace
+  after the repository, not after the catalog's `name` field, and it enforces that
+  name before it reads the repository. If you ever added `nykooi1/vibe-wise` (or
+  tried this fork before), remove the old one first: **Customize → Plugins →
+  Marketplaces**, select `vibe-wise`, remove it, then add this repository again and
+  reinstall the plugin. Renaming your fork also gives the marketplace a new name.
+- **The repository is private or the default branch isn't `main`.** Make it public,
+  or connect GitHub when the dialog asks and grant the Claude GitHub App access.
+  claude.ai reads the repository's default branch.
+- **The repository predates this fork's layout.** Here the catalog is
+  `.claude-plugin/marketplace.json` and the plugin itself is `plugins/vibe-wise/`,
+  with `"source": "./plugins/vibe-wise"`. Older copies put the plugin at the
+  repository root (`"source": "./"`), the same folder as the catalog; claude.ai
+  validates that shape more strictly and can fail the sync. Sync your fork with
+  `main` and add the marketplace again.
+- **Plugins aren't available on your account or organization.** If **Plugins**
+  never appears under **Customize**, your plan or organization doesn't offer plugin
+  marketplaces here. Use [Claude Code](#claude-code) instead.
+- **The marketplace adds but the skill doesn't answer.** Open a new chat after
+  installing, then ask "which skills do you have from plugins?" and mention
+  VibeWise or learn mode explicitly.
 
 ## What it feels like
 
@@ -249,31 +326,40 @@ are with the stack. Checkpoint frequency—Light, Normal, or Frequent—is separ
 
 Preferences, learning notes, and a project map live in `.vibe-wise/` in your project. In a Git repository, that's the repository root, and VibeWise finds it from any subfolder. Without Git, it's the folder you start in, so always start from your project's top folder. Learning mode resumes in future sessions and after compaction. Add `.vibe-wise/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 
-No extra account, backend, or telemetry. Saved notes are included in the AI's context, so your normal Claude Code or Codex data settings still apply.
+No extra account, backend, or telemetry. Saved notes are included in the AI's context, so your normal Claude, Claude Code, or Codex data settings still apply. On Claude on the web there is no project folder: the same notes stay in the conversation as a `vibe-wise-state.md` block that you choose where to keep.
 
-To start learning this project from scratch, run `/vibe-wise:reset`. It shows the
-project and asks **Cancel / Reset learning**. After confirmation, it backs up your
+To start learning this project from scratch, run `/vibe-wise:reset` (on the web,
+ask VibeWise to reset learning). It shows the project and asks **Cancel / Reset
+learning**. After confirmation, it backs up your
 profile, progress, and project map inside the notes directory's `backups/` folder,
 then restarts onboarding. Source code and other projects stay untouched. To change
 your experience level or preferences, just tell the AI; no reset is needed.
 
 ## Updating
 
+On Claude on the web, open **Customize → Plugins**, select **Marketplaces**, and
+choose **Check for updates** on `vibe-wise`. If the update doesn't reach a
+conversation, start a new chat. Plans and organization settings can delay or block
+updates.
+
 In Claude Code, open `/plugin` → **Installed**, select VibeWise, and choose **Update now**.
 For automatic updates, open **Marketplaces**, select the source you installed from,
 and enable auto-update if it's off.
 
-To update a directory installation from your terminal:
-
-```sh
-claude plugin update vibe-wise@anthropic-plugin-directory
-```
-
-If you installed through the GitHub marketplace instead:
+To update from your terminal:
 
 ```sh
 claude plugin marketplace update vibe-wise
+```
+
+```sh
 claude plugin update vibe-wise@vibe-wise
+```
+
+If you installed the upstream plugin from Anthropic's Directory instead:
+
+```sh
+claude plugin update vibe-wise@anthropic-plugin-directory
 ```
 
 Then restart Claude Code. Your project learning notes stay intact; no reset is needed.

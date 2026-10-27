@@ -5,8 +5,11 @@ the learning behavior; follow SKILL.md and its guides as written.
 
 - Commands: `/vibe-wise:learn` is `$vibe-wise:learn`; `/vibe-wise:reset` is
   `$vibe-wise:reset`.
-- Paths: `${CLAUDE_PLUGIN_ROOT}` is not expanded in Codex. The plugin root is two
-  directories above this file; guides such as behavior.md sit beside it.
+- Paths: `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_SKILL_DIR}` are not expanded in
+  Codex. The plugin root is two directories above this file; guides such as
+  behavior.md sit beside it.
+- Web: if this conversation has no shell or file tools, follow [web.md](web.md)
+  instead of the file-based state steps.
 - Files: where the guides say Read or Glob, use your file-reading and search tools.
   Reading plugin guides with a shell command is fine. Check optional learner-state
   files with a conditional that succeeds when they're missing.
