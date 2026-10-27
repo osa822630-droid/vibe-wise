@@ -1,7 +1,7 @@
 ---
 name: reset
-description: Back up this project's learning notes and restart onboarding after confirmation. Does not reset application code.
-disable-model-invocation: true
+description: Back up this project's learning notes and restart onboarding after confirmation. Does not reset application code. Use when someone explicitly asks to reset VibeWise or restart learning notes.
+compatibility: Claude Code and Codex back up .vibe-wise/ in the project; Claude on the web has no saved files to back up.
 ---
 
 # Reset VibeWise learning
@@ -12,14 +12,26 @@ code, dependencies, Git history, other projects, and plugin installation stay in
 
 If you are running in Codex rather than Claude Code, first read [codex.md](codex.md).
 
+## Claude on the web
+
+In claude.ai chat there is no `.vibe-wise/` directory, no Python, and no backup
+folder. If the learner asks to reset there, confirm once in plain text, then
+discard the saved state block or `vibe-wise-state.md` project knowledge from the
+conversation and start [Learn's](../learn/SKILL.md) onboarding again. Say clearly
+that nothing was deleted from disk. Don't run the helper below, because it can't
+reach the project.
+
+## Claude Code and Codex
+
 1. Run the read-only preview for the user's current project directory. Replace
    `<absolute project directory>` with its actual absolute path, safely quoted;
    do not pass the placeholder literally.
 
    ```sh
-   python3 "${CLAUDE_PLUGIN_ROOT}/skills/reset/reset.py" --cwd "<absolute project directory>"
+   python3 "${CLAUDE_SKILL_DIR}/reset.py" --cwd "<absolute project directory>"
    ```
 
+   In Codex, use the absolute path of this skill's folder instead; see codex.md.
    The helper uses Learn's project-boundary and legacy-state lookup. If it reports
    no notes, explain there's nothing to reset and suggest `/vibe-wise:learn`.
    On any error, stop and explain; don't improvise deletion commands.
@@ -37,14 +49,14 @@ If you are running in Codex rather than Claude Code, first read [codex.md](codex
    and the preview's exact `confirmation` value, safely quoted:
 
    ```sh
-   python3 "${CLAUDE_PLUGIN_ROOT}/skills/reset/reset.py" --cwd "<original cwd>" --confirm "<confirmation>"
+   python3 "${CLAUDE_SKILL_DIR}/reset.py" --cwd "<original cwd>" --confirm "<confirmation>"
    ```
 
    If the target or notes changed, preview again and get new confirmation. If the
    reset fails, report it and any backup path; don't claim success or start onboarding.
    Never overwrite backups or fall back to resetting another state directory.
 
-4. On success, show the backup path. Read `${CLAUDE_PLUGIN_ROOT}/skills/learn/SKILL.md` and resume Learn with
+4. On success, show the backup path. Read Learn's `SKILL.md` and resume Learn with
    the new incomplete profile. Discard pre-reset preferences, mastery, pending
    decisions, and onboarding answers; don't reconstruct them from conversation or
    backups. Inspect actual code to rebuild the map. Begin fresh onboarding with

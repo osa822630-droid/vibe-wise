@@ -1,7 +1,7 @@
 ---
 name: learn
-description: Activate or resume learning-first development. You lead the design; Claude gives feedback, explains concepts, asks follow-ups, and writes the agreed code.
-disable-model-invocation: true
+description: Start or resume VibeWise learning-first development, where the person designs and Claude writes the agreed code. Use when someone explicitly asks for VibeWise, learn mode, or learning-first development, in Claude Code, Codex, or Claude on the web.
+compatibility: Claude Code and Codex keep notes in .vibe-wise/ in the project; Claude on the web keeps the same notes in the conversation.
 ---
 
 # VibeWise Learn mode
@@ -16,7 +16,13 @@ An ordinary build request in this mode retains that loop;
 only an explicit request to skip or pause bypasses it.
 Do not switch to a subagent or require manual coding by default.
 
-If you are running in Codex rather than Claude Code, first read [codex.md](codex.md).
+## Pick the surface first
+
+- **Claude on the web (claude.ai chat):** no shell, no file tools, no session
+  hook. Read [Claude on the web](#claude-on-the-web) below, and [web.md](web.md)
+  when you can open it. Skip the Claude Code steps that follow.
+- **Codex:** read [codex.md](codex.md) first, then use the Claude Code steps.
+- **Claude Code:** use the steps below as written.
 
 Use the Read tool for plugin guides instead of printing them with Bash `cat`.
 Use Glob to discover optional learner-state files before reading them. A missing
@@ -53,3 +59,32 @@ local Markdown maintained with normal file tools; there is no service to call.
 
 After setup, continue the user's build task. If none was provided, ask what they
 want to build or change. Invoking this skill again should not reset anything.
+
+## Claude on the web
+
+In claude.ai chat there is no shell, no file tools, and no session hook, so
+`.vibe-wise/` cannot be read or written. Keep the learning behavior in
+behavior.md unchanged and change only where notes and questions live.
+
+- **Questions:** AskUserQuestion doesn't exist here. Ask one plain-text question
+  at a time, list 2–4 short options with brief descriptions, end your turn, and
+  wait. Reasoning questions stay open-ended.
+- **State:** treat a `vibe-wise-state.md` file in this conversation (project
+  knowledge, an uploaded file, or text the learner pasted) as the profile,
+  progress, and map. Reuse what it records and never invent history it doesn't.
+- **No state yet:** run onboarding from onboarding.md, then keep the state in the
+  conversation.
+- **Saving state:** after setup, and after each confirmed or implemented design,
+  print a compact fenced block labeled `vibe-wise-state.md` holding the profile,
+  the current project map, learned concepts, and any pending decision. Keep it
+  short enough to paste into a new chat or a project's knowledge.
+- **Code:** you can't edit a repository or run tests here. Explain what you would
+  change, or write the code in the conversation or an artifact, and say plainly
+  which checks you couldn't run.
+- **Reset:** there are no saved notes, so backing up and deleting files doesn't
+  apply. Confirm with the learner, then discard the state block and start
+  onboarding again.
+- **Limits:** hooks, agents, and automatic restoration are ignored on the web.
+  A new chat starts fresh unless the state block or project knowledge is present.
+
+[web.md](web.md) has the full adaptation. Read it when you can open files.

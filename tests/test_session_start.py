@@ -10,7 +10,7 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1] / "plugins/vibe-wise"
 CONFIG = json.loads((ROOT / "hooks/hooks.json").read_text())
 REGISTRATION = CONFIG["hooks"]["SessionStart"][0]
 
